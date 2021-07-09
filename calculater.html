@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+    <title>Сalculator</title>
+    <style>
+        html {
+            font-size: 15px;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+
+            font-family: 'Oswald', sans-serif;
+        }
+
+        .calculator {
+            width: 500px;
+            box-sizing: border-box;
+            padding: 2rem;
+
+            background-color: #56555b;
+            border-radius: 10%;
+
+            user-select: none;
+        }
+
+        .calculator__buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.7rem;
+
+            padding-top: 3rem;
+        }
+
+        .button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 4rem;
+            font-weight: bold;
+            color: #fcfefc;
+            height: 6rem;
+            background-color: #909497;
+            border: none;
+            border-radius: 25px;
+            flex: 1 1 calc((100% / 4) - 2rem);
+            padding: 1rem;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #80858a;
+        }
+
+        .button_bg_blue {
+            background-color: #51b8e3;
+        }
+
+        .button_bg_blue:hover {
+            background-color: #1e8ebe;
+        }
+
+        .button_bg_red {
+            background-color: #c43548;
+        }
+
+        .button_bg_red:hover {
+            background-color: #8f2e3b;
+
+        }
+
+
+        .container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            background-color: #afb3b6;
+
+        }
+
+        .button__transition-item {
+            transform: rotate(45deg);
+        }
+
+        .button__sub {
+            font-size: 2rem;
+            transform: translateY(-1rem);
+        }
+
+        .button__translate-item {
+            transform: translate(-0.3rem, .5rem);
+        }
+
+        .calculator__output {
+            display: block;
+            width: 100%;
+            height: 7rem;
+            box-sizing: border-box;
+
+            font-size: 4rem;
+            text-align: right;
+            color: #f7fffd;
+            font-weight: bold;
+            border-radius: 20px;
+            border: none;
+            background-color: #51b8e3;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .history-operation {
+            overflow-y: auto;
+            height: 40rem;
+            margin-left: 2rem;
+            font-size: 35px;
+            border: .8rem solid #909497;
+            border-radius: 1rem;
+        }
+
+        .history-operation__list {
+            height: 100%;
+            list-style: none;
+            font-size: 1em;
+            font-weight: bold;
+            box-sizing: border-box;
+
+            padding: 0.5rem 1rem;
+            margin: 0;
+        }
+
+        @media (max-width: 1020px) {
+            .calculator {
+                width: 450px;
+            }
+
+            html {
+                font-size: 12px;
+            }
+
+        }
+
+        @media (max-width: 860px) {
+            .calculator {
+                width: 430px;
+            }
+
+            html {
+                font-size: 12px;
+            }
+
+            .history-operation {
+                font-size: 20px;
+                margin-left: .5rem;
+            }
+        }
+
+
+        @media (max-width: 665px) {
+            .calculator {
+                width: 400px;
+            }
+
+            html {
+                font-size: 11px;
+            }
+
+            .history-operation {
+                font-size: 30px;
+                padding-left: 0;
+                margin-top: .5rem;
+                width: 30rem;
+                height: 17rem;
+
+                position: relative;
+            }
+
+            .container {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .calculator {
+                width: 320px;
+            }
+
+            html {
+                font-size: 8px;
+            }
+
+            .history-operation {
+                font-size: 20px;
+
+            }
+        }
+    </style>
+</head>
+
+<body unselectable="on">
+    <div class="container">
+
+        <div class="calculator">
+            <input class="calculator__output" type="text" readonly onclick="onClear()" />
+            <div class="calculator__buttons">
+                <button class="button button_bg_red" onclick="onClearAll()">C</button>
+                <button class="button button_bg_blue" onclick="onClickOnPercent()">%</button>
+                <button class="button button_bg_blue" onclick="onAction('raiseToDegree')">x<sub
+                        class="button__sub">y</sub></button>
+                <button class="button button_bg_blue" onclick="onClickOnRoot()"><span
+                        class="button__translate-item">&radic;</span></button>
+
+                <button class="button" onclick="onClickOnValue(7)">7</button>
+                <button class="button" onclick="onClickOnValue(8)">8</button>
+                <button class="button" onclick="onClickOnValue(9)">9</button>
+                <button class="button button_bg_blue" onclick="onAction('divide')">&divide;</button>
+                <button class="button" onclick="onClickOnValue(4)">4</button>
+                <button class="button" onclick="onClickOnValue(5)">5</button>
+                <button class="button" onclick="onClickOnValue(6)">6</button>
+                <button class="button button_bg_blue" onclick="onAction('multiply')"><span
+                        class="button__transition-item">+</span></button>
+                <button class="button" onclick="onClickOnValue(1)">1</button>
+                <button class="button" onclick="onClickOnValue(2)">2</button>
+                <button class="button" onclick="onClickOnValue(3)">3</button>
+                <button class="button button_bg_blue" onclick="onAction('substract')">-</button>
+                <button class="button" onclick="onClickOnValue(0)">0</button>
+                <button class="button" onclick="onClickOnPoint()">.</button>
+                <button class="button button_bg_red" onclick="onCalculate()">=</button>
+                <button class="button button_bg_blue" onclick="onAction('sum')">+</button>
+            </div>
+        </div>
+
+        <div class="history-operation">
+            <ul class="history-operation__list">
+            </ul>
+        </div>
+
+    </div>
+    </div>
+
+    <script>
+        class State {
+            subHandlers = [];
+
+            state = {
+                currentValue: 0,
+                prevValue: '',
+                action: '',
+                statesHistory: [],
+                isHavePoint: false,
+            }
+
+            setState = (newValues) => {
+                const newState = Object.assign({}, this.state, newValues);
+
+                this.subHandlers.forEach(fn => {
+                    fn(newState, this.state);
+                })
+
+                this.state = newState;
+            }
+
+            subOnUpdateState = (cb) => {
+                this.subHandlers = [cb, ...this.subHandlers]
+            }
+
+            ubSubOnUpdateState = (fn) => {
+                this.subHandlers = this.subHandlers.filter(subFn => subFn !== fn)
+            }
+        }
+
+        actions = {
+            sum: {
+                symbol: '+',
+                fun: (a, b) => {
+                    return a + b;
+                }
+            },
+            substract: {
+                symbol: '-',
+                fun: (a, b) => {
+                    return a - b;
+                }
+            },
+            multiply: {
+                symbol: '*',
+                fun: (a, b) => {
+                    return a * b;
+                },
+            },
+            divide: {
+                symbol: '/',
+                fun: (a, b) => {
+                    return a / b;
+                },
+            },
+            root: {
+                symbol: "√",
+                fun: (a) => {
+                    return Math.sqrt(a)
+                }
+            },
+            raiseToDegree: {
+                symbol: '^',
+                fun: (a, b) => {
+                    return Math.pow(a, b);
+                },
+            },
+            getPercent: {
+                symbol: '%',
+                fun: (a) => {
+                    return a / 100;
+                }
+            },
+            addPoint: (a, b) => {
+                return +(a + '.' + b);
+            }
+
+
+        }
+
+        const output = document.querySelector('.calculator__output');
+        const history = document.querySelector('.history-operation__list');
+        const historyBlock = document.querySelector('.history-operation');
+
+        const stateManager = new State();
+
+        stateManager.subOnUpdateState(updateOutput);
+        stateManager.subOnUpdateState(updateLocalStorage);
+        stateManager.subOnUpdateState(updateHistory);
+
+        const loadHistory = JSON.parse(localStorage.getItem('history'));
+
+        if (!loadHistory || loadHistory <= 0) {
+            historyBlock.hidden = true;
+        }
+        else {
+            stateManager.setState({
+                statesHistory: loadHistory
+            });
+        }
+
+
+
+
+        function onClickOnValue(value) {
+            const { currentValue, action, isHavePoint } = stateManager.state;
+
+            if (isHavePoint) {
+                stateManager.setState(
+                    {
+                        currentValue: actions['addPoint'](currentValue, value),
+                        isHavePoint: false,
+                    }
+
+                )
+                return;
+            }
+
+            if (isNaN(currentValue) || currentValue === Infinity || currentValue === "Error") {
+                stateManager.setState(
+                    {
+                        currentValue: value,
+                        action: "",
+                    }
+
+                )
+                return;
+            }
+
+            if (action === 'result') {
+                stateManager.setState(
+                    {
+                        currentValue: value,
+                        action: "",
+                    }
+                )
+                return;
+            }
+
+            stateManager.setState(
+                {
+                    currentValue: +`${currentValue}${value}`,
+                }
+            )
+        }
+
+        function onClickOnRoot() {
+            const { currentValue, statesHistory } = stateManager.state;
+
+            console.log(createHistoryString({
+                currentValue: actions["root"].fun(currentValue),
+                prevValue: currentValue,
+                action:"root"
+            }));
+
+            stateManager.setState({
+                currentValue: actions["root"].fun(currentValue),
+                statesHistory: [{
+                    currentValue: '',
+                    prevValue: currentValue,
+                    action: "root",
+                }, ...statesHistory]
+            }
+            );
+        }
+
+        function onClickOnPoint() {
+            const { currentValue } = stateManager.state;
+            const currentValueInSrting = `${currentValue}`;
+
+            if (currentValueInSrting.includes('.')) return;
+
+            stateManager.setState(
+                {
+                    currentValue,
+                    isHavePoint: true
+                }
+            )
+        }
+
+        function onClickOnPercent() {
+            const { currentValue, statesHistory } = stateManager.state;
+
+            console.log(createHistoryString({
+                currentValue: actions["getPercent"].fun(currentValue),
+                prevValue: currentValue,
+                action:"getPercent"
+            }));
+
+            stateManager.setState({
+                currentValue: actions["getPercent"].fun(currentValue),
+                statesHistory: [{
+                    currentValue: '',
+                    prevValue: currentValue,
+                    action: "getPercent",
+                }, ...statesHistory]
+            }
+            );
+        }
+
+        function onClear() {
+            const { currentValue } = stateManager.state
+            const currentValueInSrting = `${currentValue}`;
+            if (!currentValueInSrting.length) return;
+
+            if (isNaN(currentValue) || currentValue === Infinity) {
+                stateManager.setState(
+                    {
+                        currentValue: 0,
+                    }
+
+                )
+                return;
+            }
+            const newValue = currentValueInSrting.substring(0, currentValueInSrting.length - 1);
+
+            stateManager.setState(
+                {
+                    currentValue: +newValue,
+                }
+            )
+        }
+
+        function onClearAll() {
+            const { currentValue } = stateManager.state
+            const currentValueInSrting = `${currentValue}`;
+            if (!currentValueInSrting.length) return;
+
+            if (isNaN(currentValue) || currentValue === Infinity) {
+                stateManager.setState(
+                    {
+                        currentValue: 0,
+                    }
+                )
+                return;
+            }
+            stateManager.setState(
+                {
+                    currentValue: 0,
+                }
+            )
+        }
+
+        function onAction(actionName) {
+            const { currentValue, action } = stateManager.state;
+
+            stateManager.setState(
+                {
+                    currentValue: 0,
+                    prevValue: currentValue,
+                    action: actionName,
+                }
+            );
+
+        }
+
+        function onCalculate() {
+            const { currentValue, prevValue, action, statesHistory } = stateManager.state;
+
+            if (!action) return;
+
+            console.log(createHistoryString(stateManager.state));
+
+            stateManager.setState(
+                {
+                    currentValue: actions[action].fun(prevValue, currentValue),
+                    prevValue: ``,
+                    action: 'result',
+                    statesHistory: [{
+                        currentValue,
+                        prevValue,
+                        action
+                    }, ...statesHistory]
+                }
+            );
+
+
+        }
+        function createHistoryString({ prevValue, action, currentValue }) {
+            let result = `${actions[action].fun(prevValue, currentValue)}`;
+
+            if (result.length > 8) {
+                result = result.substring(0, 7) + '...';
+            }
+
+            return `${prevValue} ${actions[action].symbol} ${currentValue} = ${result}`
+        }
+
+        function updateOutput({ currentValue }) {
+            const currentValueInSrting = `${currentValue}`.substring(0, 20)
+            output.value = currentValueInSrting;
+        }
+
+        function updateHistory({ statesHistory }) {
+            if (statesHistory && statesHistory.length > 0) {
+                historyBlock.hidden = false;
+            }
+
+            history.innerHTML = '';
+            statesHistory.forEach(state => {
+                const newElement = document.createElement('li');
+                newElement.innerText = createHistoryString(state);
+                history.append(newElement);
+            });
+
+        }
+
+        function updateLocalStorage({ statesHistory }) {
+            if (statesHistory) {
+                const stringifyHistory = JSON.stringify(statesHistory);
+                localStorage.setItem('history', stringifyHistory)
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>
