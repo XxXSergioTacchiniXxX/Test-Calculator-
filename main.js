@@ -135,6 +135,8 @@ function onClickOnValue(value) {
 function onClickOnRoot() {
   const { currentValue, statesHistory } = stateManager.state;
 
+  if (currentValue < 0) return;
+
   console.log(
     createHistoryString({
       currentValue: actions["root"].fun(currentValue),
@@ -290,7 +292,9 @@ function updateHistory({ statesHistory }) {
 
 function updateLocalStorage({ statesHistory }) {
   if (statesHistory) {
-    const stringifyHistory = JSON.stringify(statesHistory);
+    const stringifyHistory = JSON.stringify(
+      (statesHistory.length > 100) ? statesHistory.slice(1, 101) : statesHistory
+    );
     localStorage.setItem("history", stringifyHistory);
   }
 }
