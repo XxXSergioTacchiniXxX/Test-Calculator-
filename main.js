@@ -1,80 +1,6 @@
-class State {
-  subHandlers = [];
-
-  state = {
-    currentValue: 0,
-    prevValue: "",
-    action: "",
-    statesHistory: [],
-    isHavePoint: false,
-  };
-
-  setState = (newValues) => {
-    const newState = Object.assign({}, this.state, newValues);
-
-    this.subHandlers.forEach((fn) => {
-      fn(newState, this.state);
-    });
-
-    this.state = newState;
-  };
-
-  subOnUpdateState = (cb) => {
-    this.subHandlers = [cb, ...this.subHandlers];
-  };
-
-  ubSubOnUpdateState = (fn) => {
-    this.subHandlers = this.subHandlers.filter((subFn) => subFn !== fn);
-  };
-}
-
-actions = {
-  sum: {
-    symbol: "+",
-    fun: (a, b) => {
-      return a + b;
-    },
-  },
-  substract: {
-    symbol: "-",
-    fun: (a, b) => {
-      return a - b;
-    },
-  },
-  multiply: {
-    symbol: "*",
-    fun: (a, b) => {
-      return a * b;
-    },
-  },
-  divide: {
-    symbol: "/",
-    fun: (a, b) => {
-      return a / b;
-    },
-  },
-  root: {
-    symbol: "√",
-    fun: (a) => {
-      return Math.sqrt(a);
-    },
-  },
-  raiseToDegree: {
-    symbol: "^",
-    fun: (a, b) => {
-      return Math.pow(a, b);
-    },
-  },
-  getPercent: {
-    symbol: "%",
-    fun: (a) => {
-      return a / 100;
-    },
-  },
-  addPoint: (a, b) => {
-    return +(a + "." + b);
-  },
-};
+import State from "./state.js";
+import actions from "./actions.js";
+import {createHistoryString} from "./string-builder.js"
 
 const output = document.querySelector(".calculator__output");
 const history = document.querySelector(".history-operation__list");
@@ -86,15 +12,52 @@ stateManager.subOnUpdateState(updateOutput);
 stateManager.subOnUpdateState(updateLocalStorage);
 stateManager.subOnUpdateState(updateHistory);
 
-const loadHistory = JSON.parse(localStorage.getItem("history"));
+subAllDomItem();
 
-if (!loadHistory || loadHistory <= 0) {
-  historyBlock.hidden = true;
-} else {
-  stateManager.setState({
-    statesHistory: loadHistory,
+loadHistory()
+
+// --------------------------------------------sub on update state----------------------------------------------------------
+
+function updateOutput({ currentValue }) {
+  const currentValueInSrting = `${currentValue}`.substring(0, 20);
+  output.value = currentValueInSrting;
+}
+
+function updateHistory({ statesHistory }) {
+  if (statesHistory && statesHistory.length > 0) {
+    historyBlock.hidden = false;
+  }
+
+  history.innerHTML = "";
+  statesHistory.forEach((state) => {
+    const newElement = document.createElement("li");
+    newElement.innerText = createHistoryString(state);
+    history.append(newElement);
   });
 }
+
+function updateLocalStorage({ statesHistory }) {
+  if (statesHistory) {
+    const stringifyHistory = JSON.stringify(
+      statesHistory.length > 100 ? statesHistory.slice(1, 101) : statesHistory
+    );
+    localStorage.setItem("history", stringifyHistory);
+  }
+}
+// --------------------------------------------load history on local storage------------------------------------------------
+
+function loadHistory() {
+  const loadedHistory = JSON.parse(localStorage.getItem("history"));
+
+  if (!loadedHistory || loadedHistory.length <= 0) {
+    historyBlock.hidden = true;
+  } else {
+    stateManager.setState({
+      statesHistory: loadedHistory,
+    });
+  }
+}
+// --------------------------------------------handlers---------------------------------------------------------------------
 
 function onClickOnValue(value) {
   const { currentValue, action, isHavePoint } = stateManager.state;
@@ -135,7 +98,13 @@ function onClickOnValue(value) {
 function onClickOnRoot() {
   const { currentValue, statesHistory } = stateManager.state;
 
-  if (currentValue < 0) return;
+  if (currentValue < 0) {
+    stateManager.setState({
+      currentValue: "Error",
+    });
+
+    return;
+  }
 
   console.log(
     createHistoryString({
@@ -262,39 +231,44 @@ function onCalculate() {
     ],
   });
 }
-function createHistoryString({ prevValue, action, currentValue }) {
-  let result = `${actions[action].fun(prevValue, currentValue)}`;
-
-  if (result.length > 8) {
-    result = result.substring(0, 7) + "...";
+// --------------------------------------------sub handlers on dom events-------------------------------------------------------
+function subAllDomItem() {
+  for (let i = 0; i <= 9; i++) {
+    document.getElementById(`${i}-button`).onclick = () => {
+      onClickOnValue(i);
+    };
   }
-
-  return `${prevValue} ${actions[action].symbol} ${currentValue} = ${result}`;
-}
-
-function updateOutput({ currentValue }) {
-  const currentValueInSrting = `${currentValue}`.substring(0, 20);
-  output.value = currentValueInSrting;
-}
-
-function updateHistory({ statesHistory }) {
-  if (statesHistory && statesHistory.length > 0) {
-    historyBlock.hidden = false;
-  }
-
-  history.innerHTML = "";
-  statesHistory.forEach((state) => {
-    const newElement = document.createElement("li");
-    newElement.innerText = createHistoryString(state);
-    history.append(newElement);
-  });
-}
-
-function updateLocalStorage({ statesHistory }) {
-  if (statesHistory) {
-    const stringifyHistory = JSON.stringify(
-      (statesHistory.length > 100) ? statesHistory.slice(1, 101) : statesHistory
-    );
-    localStorage.setItem("history", stringifyHistory);
-  }
+  document.getElementById("point-button").onclick = () => {
+    onClickOnPoint();
+  };
+  document.getElementById("calculate-button").onclick = () => {
+    onCalculate();
+  };
+  document.getElementById("sum-button").onclick = () => {
+    onAction("sum");
+  };
+  document.getElementById("substract-button").onclick = () => {
+    onAction("substract");
+  };
+  document.getElementById("multiply-button").onclick = () => {
+    onAction("multiply");
+  };
+  document.getElementById("divide-button").onclick = () => {
+    onAction("divide");
+  };
+  document.getElementById("root-button").onclick = () => {
+    onClickOnRoot();
+  };
+  document.getElementById("degree-button").onclick = () => {
+    onAction("raiseToDegree");
+  };
+  document.getElementById("percent-button").onclick = () => {
+    onClickOnPercent();
+  };
+  document.getElementById("clear-button").onclick = () => {
+    onClearAll();
+  };
+  document.getElementById("output").onclick = () => {
+    onClear();
+  };
 }

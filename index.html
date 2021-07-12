@@ -16,32 +16,32 @@
     <div class="container">
 
         <div class="calculator">
-            <input class="calculator__output" type="text" readonly onclick="onClear()" />
+            <input id="output" class="calculator__output" type="text" readonly/>
             <div class="calculator__buttons">
-                <button class="button button_bg_red" onclick="onClearAll()">C</button>
-                <button class="button button_bg_blue" onclick="onClickOnPercent()">%</button>
-                <button class="button button_bg_blue" onclick="onAction('raiseToDegree')">x<sub
+                <button id="clear-button" class="button button_bg_red">C</button>
+                <button id="percent-button" class="button button_bg_blue">%</button>
+                <button id="degree-button" class="button button_bg_blue">x<sub
                         class="button__sub">y</sub></button>
-                <button class="button button_bg_blue" onclick="onClickOnRoot()"><span
+                <button id="root-button" class="button button_bg_blue"><span
                         class="button__translate-item">&radic;</span></button>
 
-                <button class="button" onclick="onClickOnValue(7)">7</button>
-                <button class="button" onclick="onClickOnValue(8)">8</button>
-                <button class="button" onclick="onClickOnValue(9)">9</button>
-                <button class="button button_bg_blue" onclick="onAction('divide')">&divide;</button>
-                <button class="button" onclick="onClickOnValue(4)">4</button>
-                <button class="button" onclick="onClickOnValue(5)">5</button>
-                <button class="button" onclick="onClickOnValue(6)">6</button>
-                <button class="button button_bg_blue" onclick="onAction('multiply')"><span
+                <button id="7-button" class="button">7</button>
+                <button id="8-button" class="button">8</button>
+                <button id="9-button" class="button" >9</button>
+                <button id="divide-button" class="button button_bg_blue">&divide;</button>
+                <button id="4-button"  class="button" >4</button>
+                <button id="5-button"  class="button" >5</button>
+                <button id="6-button"  class="button" >6</button>
+                <button id="multiply-button" class="button button_bg_blue"><span
                         class="button__transition-item">+</span></button>
-                <button class="button" onclick="onClickOnValue(1)">1</button>
-                <button class="button" onclick="onClickOnValue(2)">2</button>
-                <button class="button" onclick="onClickOnValue(3)">3</button>
-                <button class="button button_bg_blue" onclick="onAction('substract')">-</button>
-                <button class="button" onclick="onClickOnValue(0)">0</button>
-                <button class="button" onclick="onClickOnPoint()">.</button>
-                <button class="button button_bg_red" onclick="onCalculate()">=</button>
-                <button class="button button_bg_blue" onclick="onAction('sum')">+</button>
+                <button id="1-button"  class="button" >1</button>
+                <button id="2-button"  class="button" >2</button>
+                <button id="3-button"  class="button" >3</button>
+                <button id="substract-button" class="button button_bg_blue">-</button>
+                <button id="0-button"  class="button" >0</button>
+                <button id="point-button" class="button">.</button>
+                <button id="calculate-button" class="button button_bg_red">=</button>
+                <button id="sum-button" class="button button_bg_blue">+</button>
             </div>
         </div>
 
@@ -52,9 +52,7 @@
 
     </div>
     </div>
-
-    <script src="main.js">
-    </script>
+    <script type="module" src="main.js"></script>
 </body>
 
 </html>
